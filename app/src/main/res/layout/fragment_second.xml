@@ -52,8 +52,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topButtonsLayout" />
 
-    ---
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/pasta_recycler_view"
         android:layout_width="0dp"

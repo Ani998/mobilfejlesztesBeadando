@@ -9,18 +9,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-public class FirstFragment extends Fragment {
+public class FavoritesFragment extends Fragment {
 
-    public FirstFragment() {
-
-    }
+    public FavoritesFragment() { }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
-        return inflater.inflate(R.layout.fragment_first, container, false);
+        return inflater.inflate(R.layout.fragment_favorites, container, false);
     }
 }

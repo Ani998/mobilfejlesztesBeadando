@@ -8,21 +8,7 @@
     android:background="#C79797"
     tools:context=".PastaFragment">
 
-    <Button
-        android:id="@+id/button_back"
-        style="@style/Widget.AppCompat.Button.Borderless"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:text="@string/previous"
-        android:textColor="@color/material_dynamic_neutral20"
-        android:textStyle="bold"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.05"
-        app:layout_constraintBottom_toTopOf="@id/textViewPastaTitle"
-        tools:text="Vissza" />
+
 
     <Button
         android:id="@+id/button_search"

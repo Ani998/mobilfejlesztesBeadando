@@ -26,14 +26,7 @@ public class PastaFragment extends Fragment {
 
     }
 
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
 
-        binding.buttonSecond.setOnClickListener(v ->
-                NavHostFragment.findNavController(PastaFragment.this)
-                        .navigate(R.id.action_SecondFragment_to_FirstFragment)
-        );
-    }
 
     @Override
     public void onDestroyView() {

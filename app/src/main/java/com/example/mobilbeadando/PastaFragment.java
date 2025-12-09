@@ -9,11 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
-import com.example.mobilbeadando.databinding.FragmentSecondBinding;
+import com.example.mobilbeadando.databinding.FragmentPastaBinding;
 
-public class SecondFragment extends Fragment {
+public class PastaFragment extends Fragment {
 
-    private FragmentSecondBinding binding;
+    private FragmentPastaBinding binding;
 
     @Override
     public View onCreateView(
@@ -21,7 +21,7 @@ public class SecondFragment extends Fragment {
             Bundle savedInstanceState
     ) {
 
-        binding = FragmentSecondBinding.inflate(inflater, container, false);
+        binding = FragmentPastaBinding.inflate(inflater, container, false);
         return binding.getRoot();
 
     }
@@ -30,7 +30,7 @@ public class SecondFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         binding.buttonSecond.setOnClickListener(v ->
-                NavHostFragment.findNavController(SecondFragment.this)
+                NavHostFragment.findNavController(PastaFragment.this)
                         .navigate(R.id.action_SecondFragment_to_FirstFragment)
         );
     }

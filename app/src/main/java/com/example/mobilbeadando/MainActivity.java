@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Kezdőképernyő, főoldal (FirstFragment)
         if (savedInstanceState == null) {
-            loadFragment(new FirstFragment());
+            loadFragment(new HomeFragment());
             bottomNav.setSelectedItemId(R.id.nav_home);
         }
 
@@ -38,10 +38,10 @@ public class MainActivity extends AppCompatActivity {
             int id = item.getItemId();
             if (id == R.id.nav_home) {
                 // Főoldal (FirstFragment )
-                selected = new FirstFragment();
+                selected = new HomeFragment();
             } else if (id == R.id.nav_pasta) {
                 // Itt SecondFragmentet használjuk a Pasta menüponthoz, mert a SecondFragmentet módosítottuk és nem j fragmentet hoztunk létre
-                selected = new SecondFragment();
+                selected = new PastaFragment();
             } else if (id == R.id.nav_desserts) {
                 selected = new DessertsFragment();
             } else if (id == R.id.nav_favorites) {

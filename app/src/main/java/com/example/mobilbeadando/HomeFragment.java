@@ -9,9 +9,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-public class FirstFragment extends Fragment {
+public class HomeFragment extends Fragment {
 
-    public FirstFragment() {
+    public HomeFragment() {
 
     }
 
@@ -21,6 +21,6 @@ public class FirstFragment extends Fragment {
                              @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        return inflater.inflate(R.layout.fragment_first, container, false);
+        return inflater.inflate(R.layout.fragment_home, container, false);
     }
 }

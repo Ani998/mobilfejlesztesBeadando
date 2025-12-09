@@ -9,7 +9,6 @@
     tools:context=".PastaFragment">
 
 
-
     <Button
         android:id="@+id/button_search"
         style="@style/Widget.AppCompat.Button.Borderless"
@@ -18,12 +17,12 @@
         android:layout_marginEnd="16dp"
 
         android:textColor="@color/material_dynamic_neutral20"
-        android:textStyle="bold"
         android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/textViewPastaTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.05"
-        app:layout_constraintBottom_toTopOf="@id/textViewPastaTitle"
         tools:text="Keresés" />
 
     <TextView
@@ -47,15 +46,29 @@
         android:layout_width="329dp"
         android:layout_height="83dp"
         android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:fontFamily="serif"
         android:text="Discover a variety of delicious pasta dishes, from quick meals to classic favorites."
         android:textAlignment="center"
         android:textColor="@color/material_dynamic_neutral20"
-        android:textSize="20sp"
 
-        android:layout_marginTop="24dp" app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewPastaTitle" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/pastaRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textview_pasta_content"
+        app:layout_constraintVertical_bias="1.0" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -37,10 +37,10 @@ public class MainActivity extends AppCompatActivity {
 
             int id = item.getItemId();
             if (id == R.id.nav_home) {
-                // Főoldal (FirstFragment )
+
                 selected = new HomeFragment();
             } else if (id == R.id.nav_pasta) {
-                // Itt SecondFragmentet használjuk a Pasta menüponthoz, mert a SecondFragmentet módosítottuk és nem j fragmentet hoztunk létre
+
                 selected = new PastaFragment();
             } else if (id == R.id.nav_desserts) {
                 selected = new DessertsFragment();

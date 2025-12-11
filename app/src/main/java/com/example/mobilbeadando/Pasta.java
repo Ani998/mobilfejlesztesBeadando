@@ -1,9 +1,11 @@
 package com.example.mobilbeadando;
 
 public class Pasta {
-    public String strMeal;
-    public String strMealThumb;
-    public String idMeal;
+    private String strMeal;
+    private String strMealThumb;
+    private String idMeal;
+
+    private boolean isExpanded = false;
 
     public Pasta(String strMeal, String strMealThumb, String idMeal) {
         this.strMeal = strMeal;
@@ -21,5 +23,13 @@ public class Pasta {
 
     public String getIdMeal() {
         return idMeal;
+    }
+
+    public boolean isExpanded() {
+        return isExpanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        isExpanded = expanded;
     }
 }

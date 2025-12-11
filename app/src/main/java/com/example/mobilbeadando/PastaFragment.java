@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+
 import com.example.mobilbeadando.data.api.PastaClient;
 
 import java.util.ArrayList;
@@ -44,14 +45,13 @@ public class PastaFragment extends Fragment {
 
         pastaRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        //  Induláskor betöltjük a teljes listát
+
         fetchPastaByCategory("Pasta");
 
-        //  A Keresés gomb működése
+
         button_search.setOnClickListener(v -> {
             String query = editText_search.getText().toString();
             if (!query.isEmpty()) {
-
                 fetchMealsByName(query);
             } else {
                 Toast.makeText(getContext(), "Írj be valamit!", Toast.LENGTH_SHORT).show();
@@ -64,7 +64,7 @@ public class PastaFragment extends Fragment {
 
     private void fetchPastaByCategory(String category) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.themealdb.com/api/json/v1/1/")
+                .baseUrl("https://www.themealdb.com/api/json/v1/1/filter.php?c=Pasta")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -74,9 +74,9 @@ public class PastaFragment extends Fragment {
             @Override
             public void onResponse(Call<PastaResponse> call, Response<PastaResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-
                     List<Pasta> meals = response.body().meals;
                     if (meals != null) {
+
                         pastaRecyclerView.setAdapter(new PastaResult(meals));
                     }
                 }
@@ -89,26 +89,26 @@ public class PastaFragment extends Fragment {
         });
     }
 
-
+  //ezt még meg kell nézni, mert nem jó
     private void fetchMealsByName(String query) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.themealdb.com/api/json/v1/1/")
+                .baseUrl("https://www.themealdb.com/api/json/v1/1/filter.php?c=Pasta")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         PastaClient client = retrofit.create(PastaClient.class);
-//keress, mg nem j
+
         client.searchMealsByName(query).enqueue(new Callback<PastaResponse>() {
             @Override
             public void onResponse(Call<PastaResponse> call, Response<PastaResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-
                     List<Pasta> meals = response.body().meals;
 
                     if (meals != null) {
                         pastaRecyclerView.setAdapter(new PastaResult(meals));
                     } else {
                         Toast.makeText(getContext(), "Nincs ilyen nevű étel.", Toast.LENGTH_SHORT).show();
+
                         pastaRecyclerView.setAdapter(new PastaResult(new ArrayList<>()));
                     }
                 }

@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide; // Győződj meg róla, hogy a Glide be van húzva a gradle-be!
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
@@ -61,11 +61,11 @@ public class PastaResult extends RecyclerView.Adapter<PastaResult.PastaViewHolde
 
         // Kattintás esemény az egész elemre - Kattintásra nyílik - csukódik a sor
         holder.itemView.setOnClickListener(v -> {
-            // Átállítjuk az állapotot az ellenkezőjére
+
             boolean expanded = currentPasta.isExpanded();
             currentPasta.setExpanded(!expanded);
 
-            // Értesítjük az adaptert, hogy ez az elem megváltozott, rajzolja újra
+
             notifyItemChanged(position);
         });
     }

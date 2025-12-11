@@ -12,36 +12,28 @@
     <EditText
         android:id="@+id/editText_search"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:hint="Find your meal:"
-        android:minHeight="48dp"
+        android:layout_height="48dp"
+        android:hint="Find your meal"
         android:padding="8dp"
         android:textColor="@color/material_dynamic_neutral20"
         android:textSize="16sp"
-        app:layout_constraintEnd_toStartOf="@id/button_search"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/button_search"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints" />
+        android:layout_margin="16dp"/>
 
     <Button
         android:id="@+id/button_search"
-        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-
+        android:layout_height="48dp"
+        android:text="Search"
         android:textColor="@color/material_dynamic_neutral20"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@id/editText_search"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.82"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.023"
-        tools:text="Search" />
+        app:layout_constraintTop_toTopOf="@id/editText_search"
+        android:layout_marginEnd="16dp"/>
+
 
     <TextView
         android:id="@+id/textViewPastaTitle"

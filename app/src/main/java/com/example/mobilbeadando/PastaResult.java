@@ -49,6 +49,7 @@ public class PastaResult extends RecyclerView.Adapter<PastaResult.PastaViewHolde
                 .into(holder.mealThumb);
 
         // Logika: Ha 'isExpanded' igaz, akkor látható a kép és az ID, egyébként GONE (eltűnik)
+        //"Tartalmazzon listás és részletes nézetet/nézeteket "
 
         if (currentPasta.isExpanded()) {
             holder.mealThumb.setVisibility(View.VISIBLE);

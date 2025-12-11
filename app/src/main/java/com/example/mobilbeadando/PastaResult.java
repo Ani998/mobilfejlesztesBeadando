@@ -4,13 +4,17 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.mobilbeadando.data.local.AppDatabase;
+import com.example.mobilbeadando.data.local.FavoritePasta;
 
 import java.util.List;
 
@@ -18,6 +22,7 @@ public class PastaResult extends RecyclerView.Adapter<PastaResult.PastaViewHolde
 
     private List<Pasta> pastaList;
     private Context context;
+    private AppDatabase db; // Adatbázis referencia
 
     public PastaResult(List<Pasta> pastaList) {
         this.pastaList = pastaList;
@@ -27,7 +32,10 @@ public class PastaResult extends RecyclerView.Adapter<PastaResult.PastaViewHolde
     @Override
     public PastaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         this.context = parent.getContext();
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.pasta_list_item, parent, false);
+        // Itt inicializáljuk az adatbázist
+        db = AppDatabase.getInstance(context);
+
+        View view = LayoutInflater.from(context).inflate(R.layout.pasta_list_item, parent, false);
         return new PastaViewHolder(view);
     }
 
@@ -35,22 +43,15 @@ public class PastaResult extends RecyclerView.Adapter<PastaResult.PastaViewHolde
     public void onBindViewHolder(@NonNull PastaViewHolder holder, int position) {
         Pasta currentPasta = pastaList.get(position);
 
-        // Név beállítása
         holder.mealName.setText(currentPasta.getStrMeal());
-
-        // ID beállítása
         holder.mealId.setText("ID: " + currentPasta.getIdMeal());
 
-        // Kép betöltése URL-ből Glide segítségével
-        // (ez a feladatleírásban "Nagyfelbontású képi erőforrások betöltése Glide csomag használatával valósuljon meg")
         Glide.with(context)
                 .load(currentPasta.getStrMealThumb())
-                .placeholder(R.drawable.ic_launcher_background) // Opcionális: kell egy placeholder kép
+                .placeholder(R.drawable.ic_launcher_background)
                 .into(holder.mealThumb);
 
-        // Logika: Ha 'isExpanded' igaz, akkor látható a kép és az ID, egyébként GONE (eltűnik)
-        //"Tartalmazzon listás és részletes nézetet/nézeteket "
-
+        // Kinyit/Becsuk logika
         if (currentPasta.isExpanded()) {
             holder.mealThumb.setVisibility(View.VISIBLE);
             holder.mealId.setVisibility(View.VISIBLE);
@@ -59,14 +60,51 @@ public class PastaResult extends RecyclerView.Adapter<PastaResult.PastaViewHolde
             holder.mealId.setVisibility(View.GONE);
         }
 
-        // Kattintás esemény az egész elemre - Kattintásra nyílik - csukódik a sor
         holder.itemView.setOnClickListener(v -> {
-
             boolean expanded = currentPasta.isExpanded();
             currentPasta.setExpanded(!expanded);
-
-
             notifyItemChanged(position);
+        });
+
+        // --- OKOS KEDVENC GOMB LOGIKA ---
+
+        // 1. Először beállítjuk az ikon állapotát (Kedvenc vagy nem?)
+        if (db.favoriteDao().isFavorite(currentPasta.getIdMeal())) {
+            holder.btnFavorite.setImageResource(android.R.drawable.btn_star_big_on); // Teli csillag
+        } else {
+            holder.btnFavorite.setImageResource(android.R.drawable.btn_star_big_off); // Üres csillag (vagy sima btn_star)
+        }
+
+        // 2. Kattintás kezelése
+        holder.btnFavorite.setOnClickListener(v -> {
+            FavoritePasta fav = new FavoritePasta(
+                    currentPasta.getIdMeal(),
+                    currentPasta.getStrMeal(),
+                    currentPasta.getStrMealThumb()
+            );
+
+            // Megnézzük, hogy kedvenc-e már
+            boolean isFav = db.favoriteDao().isFavorite(currentPasta.getIdMeal());
+
+            if (isFav) {
+                // HA MÁR KEDVENC -> TÖRLÉS
+                db.favoriteDao().delete(fav);
+                holder.btnFavorite.setImageResource(android.R.drawable.btn_star_big_off); // Ikon csere
+                Toast.makeText(context, "Eltávolítva a kedvencekből", Toast.LENGTH_SHORT).show();
+
+                // (Opcionális) Ha a Kedvencek képernyőn vagyunk, azonnal eltüntetjük a listából
+                // Ehhez ellenőrizhetjük, hogy melyik Fragmentben vagyunk, vagy egyszerűen hagyjuk így.
+                // Ha azonnal el akarod tüntetni a sort, akkor a listából is törölni kell:
+                // pastaList.remove(position);
+                // notifyItemRemoved(position);
+                // notifyItemRangeChanged(position, pastaList.size());
+
+            } else {
+                // HA NEM KEDVENC -> MENTÉS
+                db.favoriteDao().insert(fav);
+                holder.btnFavorite.setImageResource(android.R.drawable.btn_star_big_on); // Ikon csere
+                Toast.makeText(context, "Hozzáadva a kedvencekhez!", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -79,12 +117,14 @@ public class PastaResult extends RecyclerView.Adapter<PastaResult.PastaViewHolde
         ImageView mealThumb;
         TextView mealName;
         TextView mealId;
+        ImageButton btnFavorite;
 
         public PastaViewHolder(@NonNull View itemView) {
             super(itemView);
             mealThumb = itemView.findViewById(R.id.meal_thumb);
             mealName = itemView.findViewById(R.id.meal_name);
             mealId = itemView.findViewById(R.id.meal_id);
+            btnFavorite = itemView.findViewById(R.id.btn_favorite);
         }
     }
 }

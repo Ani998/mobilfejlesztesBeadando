@@ -31,6 +31,10 @@ public class PastaFragment extends Fragment {
     private Button button_search;
     private RecyclerView pastaRecyclerView;
 
+    // FONTOS: Ebben a listában tároljuk az ÖSSZES tésztát.
+    // Ebből fogunk válogatni kereséskor.
+    private List<Pasta> allPastaList = new ArrayList<>();
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -44,24 +48,21 @@ public class PastaFragment extends Fragment {
 
         pastaRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        //  Induláskor betöltjük a teljes listát
+        //  Letöltjük az összes tésztát a szerverről
         fetchPastaByCategory("Pasta");
 
-        //  A Keresés gomb működése
+        // Keresés gomb logika
         button_search.setOnClickListener(v -> {
-            String query = editText_search.getText().toString();
-            if (!query.isEmpty()) {
+            String query = editText_search.getText().toString().trim(); // Levágjuk a felesleges szóközöket
 
-                fetchMealsByName(query);
-            } else {
-                Toast.makeText(getContext(), "Írj be valamit!", Toast.LENGTH_SHORT).show();
-            }
+            // Itt hívjuk meg a helyi szűrést, nem a szerveres keresést!
+            filterLocalData(query);
         });
 
         return view;
     }
 
-
+    // API Hívás: Csak a "Pasta" kategória letöltése
     private void fetchPastaByCategory(String category) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://www.themealdb.com/api/json/v1/1/")
@@ -74,10 +75,15 @@ public class PastaFragment extends Fragment {
             @Override
             public void onResponse(Call<PastaResponse> call, Response<PastaResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-
                     List<Pasta> meals = response.body().meals;
+
                     if (meals != null) {
-                        pastaRecyclerView.setAdapter(new PastaResult(meals));
+                        // ELMENTJÜK a teljes listát a memóriába
+                        allPastaList.clear();
+                        allPastaList.addAll(meals);
+
+                        // Megjelenítjük az egészet alapból
+                        pastaRecyclerView.setAdapter(new PastaResult(allPastaList));
                     }
                 }
             }
@@ -89,35 +95,31 @@ public class PastaFragment extends Fragment {
         });
     }
 
+    // Helyi SZŰRÉS: Ez a függvény végzi a válogatást a már letöltött tészták között
+    private void filterLocalData(String query) {
 
-    private void fetchMealsByName(String query) {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.themealdb.com/api/json/v1/1/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        if (allPastaList.isEmpty()) {
+            Toast.makeText(getContext(), "Adatok betöltése folyamatban...", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        PastaClient client = retrofit.create(PastaClient.class);
-//keress, mg nem j
-        client.searchMealsByName(query).enqueue(new Callback<PastaResponse>() {
-            @Override
-            public void onResponse(Call<PastaResponse> call, Response<PastaResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
 
-                    List<Pasta> meals = response.body().meals;
+        List<Pasta> filteredList = new ArrayList<>();
 
-                    if (meals != null) {
-                        pastaRecyclerView.setAdapter(new PastaResult(meals));
-                    } else {
-                        Toast.makeText(getContext(), "Nincs ilyen nevű étel.", Toast.LENGTH_SHORT).show();
-                        pastaRecyclerView.setAdapter(new PastaResult(new ArrayList<>()));
-                    }
-                }
+
+        for (Pasta item : allPastaList) {
+
+            if (item.getStrMeal().toLowerCase().contains(query.toLowerCase())) {
+                filteredList.add(item);
             }
+        }
 
-            @Override
-            public void onFailure(Call<PastaResponse> call, Throwable t) {
-                Toast.makeText(getContext(), "Hiba: " + t.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
+
+        if (filteredList.isEmpty()) {
+            Toast.makeText(getContext(), "Nincs ilyen tészta.", Toast.LENGTH_SHORT).show();
+        }
+
+
+        pastaRecyclerView.setAdapter(new PastaResult(filteredList));
     }
 }

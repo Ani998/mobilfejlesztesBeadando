@@ -8,6 +8,21 @@
     android:background="#C79797"
     tools:context=".PastaFragment">
 
+    <EditText
+        android:id="@+id/editText_search"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Find your meal:"
+        android:minHeight="48dp"
+        android:padding="8dp"
+        android:textColor="@color/material_dynamic_neutral20"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/button_search"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        tools:ignore="MissingConstraints" />
+
 
     <Button
         android:id="@+id/button_search"
@@ -23,7 +38,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.05"
-        tools:text="Keresés" />
+        tools:text="Search" />
 
     <TextView
         android:id="@+id/textViewPastaTitle"

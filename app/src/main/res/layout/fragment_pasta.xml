@@ -40,6 +40,16 @@
         app:layout_constraintVertical_bias="0.05"
         tools:text="Search" />
 
+    <Button
+        android:id="@+id/button_add_test_fav"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Test Favorite"
+        app:layout_constraintTop_toBottomOf="@id/pastaRecyclerView"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="16dp"/>
+
+
     <TextView
         android:id="@+id/textViewPastaTitle"
         android:layout_width="wrap_content"

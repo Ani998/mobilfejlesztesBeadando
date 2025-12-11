@@ -6,7 +6,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 public interface PastaClient {
-    //  Név szerinti keresés
+    // 1. Név szerinti keresés
     @GET("search.php")
     Call<PastaResponse> searchMealsByName(@Query("s") String name);
 

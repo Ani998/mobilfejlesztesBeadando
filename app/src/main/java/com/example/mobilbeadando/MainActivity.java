@@ -19,21 +19,22 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // A projekt nevének elrejtése a fejlécből (Opcionális)
+        // Hogy ne jelenjen meg a projekt neve (Mobilbeadando) a felső csíkban
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
-        // 2. Alsó navigáció beállítása
+        // 2. Alsó navigáció (Bottom Navigation) beállítása
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
 
-        // 3. Kezdőképernyő betöltése indításkor (HomeFragment)
+        // 3. Kezdőképernyő betöltése (HomeFragment)
+        // Csak akkor töltjük be, ha az alkalmazás most indul (savedInstanceState == null)
         if (savedInstanceState == null) {
             loadFragment(new HomeFragment());
             bottomNav.setSelectedItemId(R.id.nav_home);
         }
 
-
+        // 4. Menüpontokra kattintás figyelése
         bottomNav.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
             int id = item.getItemId();
@@ -43,14 +44,14 @@ public class MainActivity extends AppCompatActivity {
             } else if (id == R.id.nav_pasta) {
                 selectedFragment = new PastaFragment();
             } else if (id == R.id.nav_desserts) {
-
-                selectedFragment = new DessertsFragment();
+                // FONTOS: Itt a javított DessertFragment-et hívjuk!
+                // Győződj meg róla, hogy a fájl neve: DessertFragment.java
+                selectedFragment = new DessertFragment();
             } else if (id == R.id.nav_favorites) {
-
                 selectedFragment = new FavoritesFragment();
             }
 
-
+            // Ha sikerült kiválasztani a fragmentet, betöltjük
             if (selectedFragment != null) {
                 loadFragment(selectedFragment);
                 return true;
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
+    // Segédfüggvény a Fragment cseréjéhez
     private void loadFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)

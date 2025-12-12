@@ -1,11 +1,11 @@
 package com.example.mobilbeadando;
 
 public class Dessert {
-    private String strMeal;       // TheMealDB API nem desszert-specifikus mezőneveket használ
-    private String strMealThumb;  // Dessert képe
-    private String idMeal;        // Dessert ID
+    private String strMeal;
+    private String strMealThumb;
+    private String idMeal;
 
-    private boolean isExpanded = false; // RecyclerView item kinyit/bezár logikához
+    private boolean isExpanded = false;
 
     public Dessert(String strMeal, String strMealThumb, String idMeal) {
         this.strMeal = strMeal;

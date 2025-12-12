@@ -20,21 +20,19 @@ import java.util.List;
 
 public class DessertResult extends RecyclerView.Adapter<DessertResult.DessertViewHolder> {
 
-    private List<Dessert> dessertList;
-    private Context context;
-    private AppDatabase db;
+    private final List<Dessert> dessertList;
+    private final Context context;
+    private final AppDatabase db;
 
-    public DessertResult(List<Dessert> dessertList) {
+    public DessertResult(Context context, List<Dessert> dessertList) {
+        this.context = context;
         this.dessertList = dessertList;
+        this.db = AppDatabase.getInstance(context.getApplicationContext());
     }
 
     @NonNull
     @Override
     public DessertViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        this.context = parent.getContext();
-
-        db = AppDatabase.getInstance(context);
-
         View view = LayoutInflater.from(context).inflate(R.layout.dessert_list_item, parent, false);
         return new DessertViewHolder(view);
     }
@@ -51,7 +49,7 @@ public class DessertResult extends RecyclerView.Adapter<DessertResult.DessertVie
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(holder.mealThumb);
 
-        // Kinyit/Becsuk logika
+        // Kinyitás / Becsukás
         if (currentDessert.isExpanded()) {
             holder.mealThumb.setVisibility(View.VISIBLE);
             holder.mealId.setVisibility(View.VISIBLE);
@@ -66,30 +64,32 @@ public class DessertResult extends RecyclerView.Adapter<DessertResult.DessertVie
             notifyItemChanged(position);
         });
 
-        // --- KEDVENC GOMB LOGIKA ---
+        // --- KEDVENC LOGIKA (DESSZERTRE SPECIFIKUS) ---
 
-        if (db.favoriteDao().isFavorite(currentDessert.getIdMeal())) {
-            holder.btnFavorite.setImageResource(android.R.drawable.btn_star_big_on); // teli csillag
+        // Ellenőrizzük, hogy kedvenc-e
+        if (db.favoriteDao().isFavoriteDessert(currentDessert.getIdMeal())) {
+            holder.btnFavorite.setImageResource(android.R.drawable.btn_star_big_on);
         } else {
-            holder.btnFavorite.setImageResource(android.R.drawable.btn_star_big_off); // üres csillag
+            holder.btnFavorite.setImageResource(android.R.drawable.btn_star_big_off);
         }
 
+        // Gombnyomás
         holder.btnFavorite.setOnClickListener(v -> {
-            FavoriteDessert fav = new FavoriteDessert( // class kell a FavoritesFragment-be???
+            FavoriteDessert fav = new FavoriteDessert(
                     currentDessert.getIdMeal(),
                     currentDessert.getStrMeal(),
                     currentDessert.getStrMealThumb()
             );
 
-            boolean isFav = db.favoriteDao().isFavorite(currentDessert.getIdMeal());
-
-            if (isFav) {
-                db.favoriteDao().delete(fav);
-                holder.btnFavorite.setImageResource(android.R.drawable.btn_star_big_off); //ikon csere
+            if (db.favoriteDao().isFavoriteDessert(currentDessert.getIdMeal())) {
+                // Törlés
+                db.favoriteDao().deleteDessert(fav);
+                holder.btnFavorite.setImageResource(android.R.drawable.btn_star_big_off);
                 Toast.makeText(context, "Eltávolítva a kedvencekből", Toast.LENGTH_SHORT).show();
             } else {
-                db.favoriteDao().insert(fav);
-                holder.btnFavorite.setImageResource(android.R.drawable.btn_star_big_on); //ikon csere
+                // Mentés
+                db.favoriteDao().insertDessert(fav);
+                holder.btnFavorite.setImageResource(android.R.drawable.btn_star_big_on);
                 Toast.makeText(context, "Hozzáadva a kedvencekhez!", Toast.LENGTH_SHORT).show();
             }
         });

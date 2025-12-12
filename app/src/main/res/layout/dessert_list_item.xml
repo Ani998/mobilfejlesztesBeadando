@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#DAB4B4"
+    android:background="#E6C8C8"
     android:layout_margin="8dp"
     android:padding="12dp">
 
@@ -40,7 +40,7 @@
         android:visibility="gone"
         app:layout_constraintStart_toEndOf="@id/meal_thumb"
         app:layout_constraintTop_toBottomOf="@id/meal_name"
-        tools:text="ID: 12345" />
+        tools:text="ID: 54321" />
 
     <ImageButton
         android:id="@+id/btn_favorite"

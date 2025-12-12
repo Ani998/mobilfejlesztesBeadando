@@ -24,7 +24,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import java.util.List;
+
 
 public class DessertFragment extends Fragment {
 
@@ -34,13 +34,12 @@ public class DessertFragment extends Fragment {
 
     private List<Dessert> allDessertList = new ArrayList<>();
 
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_dessert, container, false);
+        View view = inflater.inflate(R.layout.fragment_dessert, container, false); // vagy fragment_desserts, ellenőrizd a layout nevedet!
 
         editText_search = view.findViewById(R.id.editText_search);
         button_search = view.findViewById(R.id.button_search);
@@ -48,24 +47,21 @@ public class DessertFragment extends Fragment {
 
         dessertRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        //összes desszert letöltése a szerverről
+        // Letöltés
         fetchDessertByCategory("Dessert");
 
-        //Keresés gomb
+        // Keresés
         button_search.setOnClickListener(v ->{
-            String query = editText_search.getText().toString().trim(); //levágjuk a felesleges szóközöket
-            // itt hívjuk meg a helyi szűrést, nem a szerveres keresést!
+            String query = editText_search.getText().toString().trim();
             filterLocalData(query);
         });
 
         return view;
     }
 
-    //API hívás Dessert kategória letöltésére
-
     private void fetchDessertByCategory(String category) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://www.themealdb.com/api/json/v1/1/filter.php?c=Dessert")
+                .baseUrl("https://www.themealdb.com/api/json/v1/1/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -75,15 +71,15 @@ public class DessertFragment extends Fragment {
             @Override
             public void onResponse(Call<DessertResponse> call, Response<DessertResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    List<Dessert> desserts = response.body().desserts;
 
-                    if (desserts != null) {
-                        // ELMENTJÜK a teljes listát a memóriába
+                    List<Dessert> loadedDesserts = response.body().meals;
+
+                    if (loadedDesserts != null) {
                         allDessertList.clear();
-                        allDessertList.addAll(desserts);
+                        allDessertList.addAll(loadedDesserts);
 
-                        // Megjelenítjük az egészet alapból
-                        dessertRecyclerView.setAdapter(new DessertResult(allDessertList));
+
+                        dessertRecyclerView.setAdapter(new DessertResult(getContext(), allDessertList));
                     }
                 }
             }
@@ -95,10 +91,7 @@ public class DessertFragment extends Fragment {
         });
     }
 
-    // Helyi szűrés: letöltött desszertek között
-
     private void filterLocalData(String query) {
-
         if (allDessertList.isEmpty()) {
             Toast.makeText(getContext(), "Adatok betöltése folyamatban.", Toast.LENGTH_SHORT).show();
             return;
@@ -115,6 +108,7 @@ public class DessertFragment extends Fragment {
             Toast.makeText(getContext(), "Nincs ilyen desszert.", Toast.LENGTH_SHORT).show();
         }
 
-        dessertRecyclerView.setAdapter(new DessertResult(filteredList));
+
+        dessertRecyclerView.setAdapter(new DessertResult(getContext(), filteredList));
     }
 }

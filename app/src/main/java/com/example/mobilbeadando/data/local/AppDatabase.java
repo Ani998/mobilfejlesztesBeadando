@@ -5,8 +5,10 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(entities = {FavoritePasta.class}, version = 1)
+//Mindkettő adatbázis a kedvencek tárolásához
+@Database(entities = {FavoritePasta.class, FavoriteDessert.class}, version = 2)
 public abstract class AppDatabase extends RoomDatabase {
+
     public abstract FavoriteDao favoriteDao();
 
     private static volatile AppDatabase INSTANCE;
@@ -16,8 +18,9 @@ public abstract class AppDatabase extends RoomDatabase {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                                    AppDatabase.class, "pasta-database")
+                                    AppDatabase.class, "app-database")
                             .allowMainThreadQueries()
+                            .fallbackToDestructiveMigration() // Ez engedi, hogy frissüljön az adatbázis
                             .build();
                 }
             }

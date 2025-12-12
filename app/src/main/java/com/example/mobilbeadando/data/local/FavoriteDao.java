@@ -10,19 +10,32 @@ import java.util.List;
 
 @Dao
 public interface FavoriteDao {
-    // Mentés / felülírás
+
+    //  PASTA
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(FavoritePasta pasta);
 
-    // Törlés
     @Delete
     void delete(FavoritePasta pasta);
 
-    // Összes kedvenc lekérése
     @Query("SELECT * FROM favorites")
     List<FavoritePasta> getAllFavorites();
 
-    // Ellenőrizzük, hogy kedvenc-e már
     @Query("SELECT EXISTS(SELECT 1 FROM favorites WHERE idMeal = :id LIMIT 1)")
     boolean isFavorite(String id);
+
+
+
+    //Dessert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertDessert(FavoriteDessert dessert);
+
+    @Delete
+    void deleteDessert(FavoriteDessert dessert);
+
+    @Query("SELECT * FROM favorite_desserts")
+    List<FavoriteDessert> getAllFavoriteDesserts();
+
+    @Query("SELECT EXISTS(SELECT 1 FROM favorite_desserts WHERE idMeal = :id LIMIT 1)")
+    boolean isFavoriteDessert(String id);
 }

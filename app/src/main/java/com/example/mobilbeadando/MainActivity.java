@@ -15,47 +15,51 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Toolbar beállítása
+        // 1. Toolbar beállítása
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //hogy ne jelenjen meg a projekt neve
+        // A projekt nevének elrejtése a fejlécből (Opcionális)
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
-        // Alsó navigáció
+
+        // 2. Alsó navigáció beállítása
         BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
 
-        // Kezdőképernyő, főoldal (FirstFragment)
+        // 3. Kezdőképernyő betöltése indításkor (HomeFragment)
         if (savedInstanceState == null) {
             loadFragment(new HomeFragment());
             bottomNav.setSelectedItemId(R.id.nav_home);
         }
 
+
         bottomNav.setOnItemSelectedListener(item -> {
-            Fragment selected = null;
-
+            Fragment selectedFragment = null;
             int id = item.getItemId();
+
             if (id == R.id.nav_home) {
-
-                selected = new HomeFragment();
+                selectedFragment = new HomeFragment();
             } else if (id == R.id.nav_pasta) {
-
-                selected = new PastaFragment();
+                selectedFragment = new PastaFragment();
             } else if (id == R.id.nav_desserts) {
-                selected = new DessertsFragment();
+
+                selectedFragment = new DessertsFragment();
             } else if (id == R.id.nav_favorites) {
-                selected = new FavoritesFragment();
+
+                selectedFragment = new FavoritesFragment();
             }
 
-            if (selected != null) {
-                loadFragment(selected);
+
+            if (selectedFragment != null) {
+                loadFragment(selectedFragment);
                 return true;
             } else {
                 return false;
             }
         });
     }
+
 
     private void loadFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()

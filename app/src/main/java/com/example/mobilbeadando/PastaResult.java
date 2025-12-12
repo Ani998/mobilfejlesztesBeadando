@@ -22,7 +22,7 @@ public class PastaResult extends RecyclerView.Adapter<PastaResult.PastaViewHolde
 
     private List<Pasta> pastaList;
     private Context context;
-    private AppDatabase db; // Adatbázis referencia
+    private AppDatabase db;
 
     public PastaResult(List<Pasta> pastaList) {
         this.pastaList = pastaList;
@@ -32,7 +32,7 @@ public class PastaResult extends RecyclerView.Adapter<PastaResult.PastaViewHolde
     @Override
     public PastaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         this.context = parent.getContext();
-        // Itt inicializáljuk az adatbázist
+
         db = AppDatabase.getInstance(context);
 
         View view = LayoutInflater.from(context).inflate(R.layout.pasta_list_item, parent, false);
@@ -51,7 +51,7 @@ public class PastaResult extends RecyclerView.Adapter<PastaResult.PastaViewHolde
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(holder.mealThumb);
 
-        // Kinyit/Becsuk logika
+
         if (currentPasta.isExpanded()) {
             holder.mealThumb.setVisibility(View.VISIBLE);
             holder.mealId.setVisibility(View.VISIBLE);
@@ -66,16 +66,14 @@ public class PastaResult extends RecyclerView.Adapter<PastaResult.PastaViewHolde
             notifyItemChanged(position);
         });
 
-        // --- OKOS KEDVENC GOMB LOGIKA ---
 
-        // 1. Először beállítjuk az ikon állapotát (Kedvenc vagy nem?)
         if (db.favoriteDao().isFavorite(currentPasta.getIdMeal())) {
             holder.btnFavorite.setImageResource(android.R.drawable.btn_star_big_on); // Teli csillag
         } else {
             holder.btnFavorite.setImageResource(android.R.drawable.btn_star_big_off); // Üres csillag (vagy sima btn_star)
         }
 
-        // 2. Kattintás kezelése
+
         holder.btnFavorite.setOnClickListener(v -> {
             FavoritePasta fav = new FavoritePasta(
                     currentPasta.getIdMeal(),
@@ -87,20 +85,15 @@ public class PastaResult extends RecyclerView.Adapter<PastaResult.PastaViewHolde
             boolean isFav = db.favoriteDao().isFavorite(currentPasta.getIdMeal());
 
             if (isFav) {
-                // HA MÁR KEDVENC -> TÖRLÉS
+
                 db.favoriteDao().delete(fav);
                 holder.btnFavorite.setImageResource(android.R.drawable.btn_star_big_off); // Ikon csere
                 Toast.makeText(context, "Eltávolítva a kedvencekből", Toast.LENGTH_SHORT).show();
 
-                // (Opcionális) Ha a Kedvencek képernyőn vagyunk, azonnal eltüntetjük a listából
-                // Ehhez ellenőrizhetjük, hogy melyik Fragmentben vagyunk, vagy egyszerűen hagyjuk így.
-                // Ha azonnal el akarod tüntetni a sort, akkor a listából is törölni kell:
-                // pastaList.remove(position);
-                // notifyItemRemoved(position);
-                // notifyItemRangeChanged(position, pastaList.size());
+
 
             } else {
-                // HA NEM KEDVENC -> MENTÉS
+
                 db.favoriteDao().insert(fav);
                 holder.btnFavorite.setImageResource(android.R.drawable.btn_star_big_on); // Ikon csere
                 Toast.makeText(context, "Hozzáadva a kedvencekhez!", Toast.LENGTH_SHORT).show();

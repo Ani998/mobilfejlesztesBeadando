@@ -1,0 +1,214 @@
+Index: app/src/main/java/com/example/mobilbeadando/data/api/PastaClient.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.mobilbeadando.data.api;\r\n\r\nimport com.example.mobilbeadando.PastaResponse;\r\nimport retrofit2.Call;\r\nimport retrofit2.http.GET;\r\nimport retrofit2.http.Query;\r\n\r\npublic interface PastaClient {\r\n    // 1. Név szerinti keresés\r\n    @GET(\"search.php\")\r\n    Call<PastaResponse> searchMealsByName(@Query(\"s\") String name);\r\n\r\n    // Minden tészta listázása\r\n    @GET(\"filter.php\")\r\n    Call<PastaResponse> getMealsByCategory(@Query(\"c\") String category);\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/mobilbeadando/data/api/PastaClient.java b/app/src/main/java/com/example/mobilbeadando/data/api/PastaClient.java
+--- a/app/src/main/java/com/example/mobilbeadando/data/api/PastaClient.java	(revision 43b5f88e3341422c9d5d0a18c5b17dfab7357774)
++++ b/app/src/main/java/com/example/mobilbeadando/data/api/PastaClient.java	(date 1765490490215)
+@@ -1,6 +1,5 @@
+ package com.example.mobilbeadando.data.api;
+ 
+-import com.example.mobilbeadando.PastaResponse;
+ import retrofit2.Call;
+ import retrofit2.http.GET;
+ import retrofit2.http.Query;
+Index: app/src/main/java/com/example/mobilbeadando/DessertsResponse.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/mobilbeadando/DessertsResponse.java b/app/src/main/java/com/example/mobilbeadando/DessertsResponse.java
+new file mode 100644
+--- /dev/null	(date 1765492105041)
++++ b/app/src/main/java/com/example/mobilbeadando/DessertsResponse.java	(date 1765492105041)
+@@ -0,0 +1,8 @@
++package com.example.mobilbeadando;
++
++import java.util.List;
++
++public class DessertResponse {
++
++    public List<Dessert> meals;
++}
+\ No newline at end of file
+Index: app/src/main/java/com/example/mobilbeadando/DessertsFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.mobilbeadando;\r\n\r\nimport android.os.Bundle;\r\nimport android.view.LayoutInflater;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.annotation.Nullable;\r\nimport androidx.fragment.app.Fragment;\r\n\r\npublic class DessertsFragment extends Fragment {\r\n\r\n    public DessertsFragment() {\r\n\r\n    }\r\n\r\n    @Nullable\r\n    @Override\r\n    public View onCreateView(@NonNull LayoutInflater inflater,\r\n                             @Nullable ViewGroup container,\r\n                             @Nullable Bundle savedInstanceState) {\r\n\r\n        return inflater.inflate(R.layout.fragment_desserts, container, false);\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/mobilbeadando/DessertsFragment.java b/app/src/main/java/com/example/mobilbeadando/DessertsFragment.java
+--- a/app/src/main/java/com/example/mobilbeadando/DessertsFragment.java	(revision 43b5f88e3341422c9d5d0a18c5b17dfab7357774)
++++ b/app/src/main/java/com/example/mobilbeadando/DessertsFragment.java	(date 1765491878182)
+@@ -4,23 +4,62 @@
+ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.ViewGroup;
++import android.widget.Button;
++import android.widget.EditText;
++import android.widget.Toast;
+ 
+ import androidx.annotation.NonNull;
+ import androidx.annotation.Nullable;
+ import androidx.fragment.app.Fragment;
++import androidx.recyclerview.widget.LinearLayoutManager;
++import androidx.recyclerview.widget.RecyclerView;
++
++import com.example.mobilbeadando.data.api.DessertClient;
+ 
+-public class DessertsFragment extends Fragment {
++import java.util.ArrayList;
++import java.util.List;
+ 
+-    public DessertsFragment() {
++import retrofit2.Call;
++import retrofit2.Callback;
++import retrofit2.Response;
++import retrofit2.Retrofit;
++import retrofit2.converter.gson.GsonConverterFactory;
+ 
+-    }
++public class DessertFragment extends Fragment {
++
++    private EditText editText_search;
++    private Button button_search;
++    private RecyclerView dessertRecyclerView;
++
++    // ÖSSZES desszert listája
++    private List<Dessert> allDessertList = new ArrayList<>();
+ 
+     @Nullable
+     @Override
+-    public View onCreateView(@NonNull LayoutInflater inflater,
+-                             @Nullable ViewGroup container,
+-                             @Nullable Bundle savedInstanceState) {
++    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
++                             Bundle savedInstanceState) {
++
++        View view = inflater.inflate(R.layout.fragment_dessert, container, false);
++
++        editText_search = view.findViewById(R.id.editText_search);
++        button_search = view.findViewById(R.id.button_search);
++        dessertRecyclerView = view.findViewById(R.id.dessertRecyclerView);
++
++        dessertRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
++
++        // Lekérjük AZ ÖSSZES DESSZERTET
++        fetchDesserts("Dessert");
+ 
+-        return inflater.inflate(R.layout.fragment_desserts, container, false);
++        // Keresés helyi listában
++        button_search.setOnClickListener(v -> {
++            String query = editText_search.getText().toString().trim();
++            filterLocalData(query);
++        });
++
++        return view;
+     }
+-}
+\ No newline at end of file
++
++    // API hívás
++    private void fetchDesserts(String category) {
++        Retrofit retrofit = new Retrofit.Builder()
++                .baseUrl("https://www.them
+Index: app/src/main/java/com/example/mobilbeadando/DessertsResult.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/mobilbeadando/DessertsResult.java b/app/src/main/java/com/example/mobilbeadando/DessertsResult.java
+new file mode 100644
+--- /dev/null	(date 1765492296177)
++++ b/app/src/main/java/com/example/mobilbeadando/DessertsResult.java	(date 1765492296177)
+@@ -0,0 +1,86 @@
++package com.example.mobilbeadando;
++
++import android.content.Context;
++import android.view.LayoutInflater;
++import android.view.View;
++import android.view.ViewGroup;
++import android.widget.ImageView;
++import android.widget.TextView;
++
++import androidx.annotation.NonNull;
++import androidx.recyclerview.widget.RecyclerView;
++
++import com.bumptech.glide.Glide;
++
++import java.util.List;
++
++public class DessertResult extends RecyclerView.Adapter<DessertResult.DessertViewHolder> {
++
++    private List<Dessert> dessertList;
++    private Context context;
++
++    public DessertResult(List<Dessert> dessertList) {
++        this.dessertList = dessertList;
++    }
++
++    @NonNull
++    @Override
++    public DessertViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
++        this.context = parent.getContext();
++        View view = LayoutInflater.from(parent.getContext())
++                .inflate(R.layout.dessert_list_item, parent, false);
++        return new DessertViewHolder(view);
++    }
++
++    @Override
++    public void onBindViewHolder(@NonNull DessertViewHolder holder, int position) {
++        Dessert currentDessert = dessertList.get(position);
++
++        // Név megjelenítése
++        holder.mealName.setText(currentDessert.getStrMeal());
++
++        // ID megjelenítése
++        holder.mealId.setText("ID: " + currentDessert.idMeal);
++
++        // Kép betöltése Glide segítségével
++        Glide.with(context)
++                .load(currentDessert.strMealThumb)
++                .placeholder(R.drawable.ic_launcher_background)
++                .into(holder.mealThumb);
++
++        // Részletes nézet nyitása/zárása
++        if (currentDessert.isExpanded()) {
++            holder.mealThumb.setVisibility(View.VISIBLE);
++            holder.mealId.setVisibility(View.VISIBLE);
++        } else {
++            holder.mealThumb.setVisibility(View.GONE);
++            holder.mealId.setVisibility(View.GONE);
++        }
++
++        holder.itemView.setOnClickListener(v -> {
++            boolean expanded = currentDessert.isExpanded();
++            currentDessert.setExpanded(!expanded);
++            notifyItemChanged(position);
++        });
++    }
++
++    @Override
++    public int getItemCount() {
++        return dessertList.size();
++    }
++
++    public static class DessertViewHolder extends RecyclerView.ViewHolder {
++
++        ImageView mealThumb;
++        TextView mealName;
++        TextView mealId;
++
++        public DessertViewHolder(@NonNull View itemView) {
++            super(itemView);
++
++            mealThumb = itemView.findViewById(R.id.meal_thumb);
++            mealName = itemView.findViewById(R.id.meal_name);
++            mealId = itemView.findViewById(R.id.meal_id);
++        }
++    }
++}

@@ -1,0 +1,529 @@
+Index: app/src/main/java/com/example/mobilbeadando/data/api/PastaClient.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.mobilbeadando.data.api;\r\n\r\nimport com.example.mobilbeadando.PastaResponse;\r\nimport retrofit2.Call;\r\nimport retrofit2.http.GET;\r\nimport retrofit2.http.Query;\r\n\r\npublic interface PastaClient {\r\n    // 1. Név szerinti keresés\r\n    @GET(\"search.php\")\r\n    Call<PastaResponse> searchMealsByName(@Query(\"s\") String name);\r\n\r\n    // Minden tészta listázása\r\n    @GET(\"filter.php\")\r\n    Call<PastaResponse> getMealsByCategory(@Query(\"c\") String category);\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/mobilbeadando/data/api/PastaClient.java b/app/src/main/java/com/example/mobilbeadando/data/api/PastaClient.java
+--- a/app/src/main/java/com/example/mobilbeadando/data/api/PastaClient.java	(revision c74b205eb9bf661f236c1a29fd2ec2931bb509d3)
++++ b/app/src/main/java/com/example/mobilbeadando/data/api/PastaClient.java	(date 1765492300245)
+@@ -1,6 +1,5 @@
+ package com.example.mobilbeadando.data.api;
+ 
+-import com.example.mobilbeadando.PastaResponse;
+ import retrofit2.Call;
+ import retrofit2.http.GET;
+ import retrofit2.http.Query;
+Index: app/src/main/res/layout/fragment_desserts.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/fragment_desserts.xml b/app/src/main/res/layout/fragment_dessert.xml
+rename from app/src/main/res/layout/fragment_desserts.xml
+rename to app/src/main/res/layout/fragment_dessert.xml
+--- a/app/src/main/res/layout/fragment_desserts.xml	(revision c74b205eb9bf661f236c1a29fd2ec2931bb509d3)
++++ b/app/src/main/res/layout/fragment_dessert.xml	(date 1765494519170)
+@@ -1,6 +1,82 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
++<androidx.constraintlayout.widget.ConstraintLayout
++    xmlns:android="http://schemas.android.com/apk/res/android"
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++    xmlns:tools="http://schemas.android.com/tools"
++    android:id="@+id/dessertConstraintLayout"
+     android:layout_width="match_parent"
+-    android:layout_height="match_parent">
++    android:layout_height="match_parent"
++    android:background="#C79797"
++    tools:context=".DessertFragment">
++
++    <EditText
++        android:id="@+id/editText_search"
++        android:layout_width="0dp"
++        android:layout_height="wrap_content"
++        android:layout_marginTop="16dp"
++        android:layout_marginStart="16dp"
++        android:layout_marginEnd="8dp"
++        android:hint="Find your dessert:"
++        android:minHeight="48dp"
++        android:padding="8dp"
++        android:textColor="@color/black"
++        android:background="@android:color/white"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toTopOf="parent"
++        app:layout_constraintEnd_toStartOf="@+id/button_search" />
++
++    <Button
++        android:id="@+id/button_search"
++        style="@style/Widget.AppCompat.Button.Colored"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:text="Search"
++        android:textStyle="bold"
++        android:layout_marginEnd="16dp"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintTop_toTopOf="@+id/editText_search"
++        app:layout_constraintBottom_toBottomOf="@+id/editText_search" />
++
++    <TextView
++        android:id="@+id/textViewPastaTitle"
++        android:layout_width="wrap_content"
++        android:layout_height="wrap_content"
++        android:layout_marginTop="16dp"
++        android:fontFamily="cursive"
++        android:text="Dessert"
++        android:textAllCaps="true"
++        android:textColor="@android:color/white"
++        android:textSize="34sp"
++        android:textStyle="bold|italic"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintTop_toBottomOf="@+id/editText_search" />
++
++    <TextView
++        android:id="@+id/textview_pasta_content"
++        android:layout_width="0dp"
++        android:layout_height="wrap_content"
++        android:layout_marginStart="24dp"
++        android:layout_marginTop="80dp"
++        android:layout_marginEnd="24dp"
++        android:fontFamily="serif"
++        android:text="Discover a variety of desserts."
++        android:textAlignment="center"
++        android:textColor="@android:color/white"
++        android:textSize="18sp"
++        app:layout_constraintEnd_toEndOf="parent"
++        app:layout_constraintHorizontal_bias="1.0"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintTop_toBottomOf="@+id/editText_search" />
++
++    <androidx.recyclerview.widget.RecyclerView
++        android:id="@+id/dessertRecyclerView"
++        android:layout_width="match_parent"
++        android:layout_height="0dp"
++        android:layout_marginTop="16dp"
++        app:layout_constraintTop_toBottomOf="@+id/textview_dessert_content"
++        app:layout_constraintBottom_toBottomOf="parent"
++        app:layout_constraintStart_toStartOf="parent"
++        app:layout_constraintEnd_toEndOf="parent" />
+ 
+ </androidx.constraintlayout.widget.ConstraintLayout>
+\ No newline at end of file
+Index: app/src/main/java/com/example/mobilbeadando/DessertsFragment.java
+===================================================================
+diff --git a/app/src/main/java/com/example/mobilbeadando/DessertsFragment.java b/app/src/main/java/com/example/mobilbeadando/DessertsFragment.java
+deleted file mode 100644
+--- a/app/src/main/java/com/example/mobilbeadando/DessertsFragment.java	(revision c74b205eb9bf661f236c1a29fd2ec2931bb509d3)
++++ /dev/null	(revision c74b205eb9bf661f236c1a29fd2ec2931bb509d3)
+@@ -1,26 +0,0 @@
+-package com.example.mobilbeadando;
+-
+-import android.os.Bundle;
+-import android.view.LayoutInflater;
+-import android.view.View;
+-import android.view.ViewGroup;
+-
+-import androidx.annotation.NonNull;
+-import androidx.annotation.Nullable;
+-import androidx.fragment.app.Fragment;
+-
+-public class DessertsFragment extends Fragment {
+-
+-    public DessertsFragment() {
+-
+-    }
+-
+-    @Nullable
+-    @Override
+-    public View onCreateView(@NonNull LayoutInflater inflater,
+-                             @Nullable ViewGroup container,
+-                             @Nullable Bundle savedInstanceState) {
+-
+-        return inflater.inflate(R.layout.fragment_desserts, container, false);
+-    }
+-}
+\ No newline at end of file
+Index: app/src/main/java/com/example/mobilbeadando/DessertResult.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/mobilbeadando/DessertResult.java b/app/src/main/java/com/example/mobilbeadando/DessertResult.java
+new file mode 100644
+--- /dev/null	(date 1765492764601)
++++ b/app/src/main/java/com/example/mobilbeadando/DessertResult.java	(date 1765492764601)
+@@ -0,0 +1,116 @@
++package com.example.mobilbeadando;
++
++import android.content.Context;
++import android.view.LayoutInflater;
++import android.view.View;
++import android.view.ViewGroup;
++import android.widget.ImageButton;
++import android.widget.ImageView;
++import android.widget.TextView;
++import android.widget.Toast;
++
++import androidx.annotation.NonNull;
++import androidx.recyclerview.widget.RecyclerView;
++
++import com.bumptech.glide.Glide;
++import com.example.mobilbeadando.data.local.AppDatabase;
++import com.example.mobilbeadando.data.local.FavoriteDessert;
++
++import java.util.List;
++
++public class DessertResult extends RecyclerView.Adapter<DessertResult.DessertViewHolder> {
++
++    private List<Dessert> dessertList;
++    private Context context;
++    private AppDatabase db;
++
++    public DessertResult(List<Dessert> dessertList) {
++        this.dessertList = dessertList;
++    }
++
++    @NonNull
++    @Override
++    public DessertViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
++        this.context = parent.getContext();
++        db = AppDatabase.getInstance(context);
++
++        View view = LayoutInflater.from(context).inflate(R.layout.dessert_list_item, parent, false);
++        return new DessertViewHolder(view);
++    }
++
++    @Override
++    public void onBindViewHolder(@NonNull DessertViewHolder holder, int position) {
++        Dessert currentDessert = dessertList.get(position);
++
++        holder.mealName.setText(currentDessert.getStrMeal());
++        holder.mealId.setText("ID: " + currentDessert.idMeal);
++
++        Glide.with(context)
++                .load(currentDessert.strMealThumb)
++                .placeholder(R.drawable.ic_launcher_background)
++                .into(holder.mealThumb);
++
++        // Kinyit/Becsuk logika
++        if (currentDessert.isExpanded()) {
++            holder.mealThumb.setVisibility(View.VISIBLE);
++            holder.mealId.setVisibility(View.VISIBLE);
++        } else {
++            holder.mealThumb.setVisibility(View.GONE);
++            holder.mealId.setVisibility(View.GONE);
++        }
++
++        holder.itemView.setOnClickListener(v -> {
++            boolean expanded = currentDessert.isExpanded();
++            currentDessert.setExpanded(!expanded);
++            notifyItemChanged(position);
++        });
++
++        // --- KEDVENC GOMB LOGIKA ---
++
++        if (db.favoriteDao().isFavorite(currentDessert.idMeal)) {
++            holder.btnFavorite.setImageResource(android.R.drawable.btn_star_big_on);
++        } else {
++            holder.btnFavorite.setImageResource(android.R.drawable.btn_star_big_off);
++        }
++
++        holder.btnFavorite.setOnClickListener(v -> {
++            FavoriteDessert fav = new FavoriteDessert(
++                    currentDessert.idMeal,
++                    currentDessert.getStrMeal(),
++                    currentDessert.strMealThumb
++            );
++
++            boolean isFav = db.favoriteDao().isFavorite(currentDessert.idMeal);
++
++            if (isFav) {
++                db.favoriteDao().delete(fav);
++                holder.btnFavorite.setImageResource(android.R.drawable.btn_star_big_off);
++                Toast.makeText(context, "Eltávolítva a kedvencekből", Toast.LENGTH_SHORT).show();
++            } else {
++                db.favoriteDao().insert(fav);
++                holder.btnFavorite.setImageResource(android.R.drawable.btn_star_big_on);
++                Toast.makeText(context, "Hozzáadva a kedvencekhez!", Toast.LENGTH_SHORT).show();
++            }
++        });
++    }
++
++    @Override
++    public int getItemCount() {
++        return dessertList.size();
++    }
++
++    public static class DessertViewHolder extends RecyclerView.ViewHolder {
++        ImageView mealThumb;
++        TextView mealName;
++        TextView mealId;
++        ImageButton btnFavorite;
++
++        public DessertViewHolder(@NonNull View itemView) {
++            super(itemView);
++            mealThumb = itemView.findViewById(R.id.meal_thumb);
++            mealName = itemView.findViewById(R.id.meal_name);
++            mealId = itemView.findViewById(R.id.meal_id);
++            btnFavorite = itemView.findViewById(R.id.btn_favorite);
++        }
++    }
++}
+Index: app/src/main/java/com/example/mobilbeadando/DessertFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/mobilbeadando/DessertFragment.java b/app/src/main/java/com/example/mobilbeadando/DessertFragment.java
+new file mode 100644
+--- /dev/null	(date 1765495041975)
++++ b/app/src/main/java/com/example/mobilbeadando/DessertFragment.java	(date 1765495041975)
+@@ -0,0 +1,48 @@
++package com.example.mobilbeadando;
++
++import android.os.Bundle;
++import android.view.LayoutInflater;
++import android.view.View;
++import android.view.ViewGroup;
++import android.widget.Button;
++import android.widget.EditText;
++import android.widget.Toast;
++
++import androidx.annotation.NonNull;
++import androidx.annotation.Nullable;
++import androidx.fragment.app.Fragment;
++import androidx.recyclerview.widget.LinearLayoutManager;
++import androidx.recyclerview.widget.RecyclerView;
++
++import com.example.mobilbeadando.data.api.DessertClient;
++
++import java.util.ArrayList;
++import java.util.List;
++
++import retrofit2.Call;
++import retrofit2.Callback;
++import retrofit2.Response;
++import retrofit2.Retrofit;
++import retrofit2.converter.gson.GsonConverterFactory;
++
++public class DessertFragment extends Fragment {
++
++    private EditText editText_search;
++    private Button button_search;
++    private RecyclerView dessertRecyclerView;
++
++    // FONTOS: Ebben a listában tároljuk az ÖSSZES desszertet.
++    private List<Dessert> allDessertList = new ArrayList<>();
++
++    @Nullable
++    @Override
++    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
++                             Bundle savedInstanceState) {
++
++        View view = inflater.inflate(R.layout.fragment_dessert, container, false);
++
++        editText_search = view.findViewById(R.id.editText_search);
++        button_search = view.findViewById(R.id.button_search);
++        dessertRecyclerView = view.findViewById(R.id.dessertRecyclerView);
++    }
++}
+\ No newline at end of file
+Index: app/src/main/java/com/example/mobilbeadando/data/api/DessertClient.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/mobilbeadando/data/api/DessertClient.java b/app/src/main/java/com/example/mobilbeadando/data/api/DessertClient.java
+new file mode 100644
+--- /dev/null	(date 1765493970697)
++++ b/app/src/main/java/com/example/mobilbeadando/data/api/DessertClient.java	(date 1765493970697)
+@@ -0,0 +1,14 @@
++package com.example.mobilbeadando.data.api;
++
++import retrofit2.Call;
++import retrofit2.http.GET;
++import retrofit2.http.Query;
++
++public interface DessertClient {
++
++    @GET("search.php")
++    Call<DessertResponse> searchMealsByName(@Query("s") String name);
++
++    @GET("filter.php")
++    Call<DessertResponse> getMealsByCategory(@Query("c") String category);
++}
+\ No newline at end of file
+Index: app/src/main/java/com/example/mobilbeadando/DessertResponse.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/mobilbeadando/DessertResponse.java b/app/src/main/java/com/example/mobilbeadando/DessertResponse.java
+new file mode 100644
+--- /dev/null	(date 1765492700538)
++++ b/app/src/main/java/com/example/mobilbeadando/DessertResponse.java	(date 1765492700538)
+@@ -0,0 +1,8 @@
++package com.example.mobilbeadando;
++
++import java.util.List;
++
++public class DessertResponse {
++
++    public List<Dessert> meals;
++}
+\ No newline at end of file
+Index: app/src/main/java/com/example/mobilbeadando/Dessert.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/mobilbeadando/Dessert.java b/app/src/main/java/com/example/mobilbeadando/Dessert.java
+new file mode 100644
+--- /dev/null	(date 1765495850636)
++++ b/app/src/main/java/com/example/mobilbeadando/Dessert.java	(date 1765495850636)
+@@ -0,0 +1,35 @@
++package com.example.mobilbeadando;
++
++public class Dessert {
++    private String strMeal;       // Dessert neve
++    private String strMealThumb;  // Dessert képe
++    private String idMeal;        // Dessert ID
++
++    private boolean isExpanded = false; // RecyclerView item kinyit/bezár logikához
++
++    public Dessert(String strMeal, String strMealThumb, String idMeal) {
++        this.strMeal = strMeal;
++        this.strMealThumb = strMealThumb;
++        this.idMeal = idMeal;
++    }
++
++    public String getStrMeal() {
++        return strMeal;
++    }
++
++    public String getStrMealThumb() {
++        return strMealThumb;
++    }
++
++    public String getIdMeal() {
++        return idMeal;
++    }
++
++    public boolean isExpanded() {
++        return isExpanded;
++    }
++
++    public void setExpanded(boolean expanded) {
++        isExpanded = expanded;
++    }
++}
+Index: app/src/main/res/layout/dessert_list_item.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/res/layout/dessert_list_item.xml b/app/src/main/res/layout/dessert_list_item.xml
+new file mode 100644
+--- /dev/null	(date 1765494920212)
++++ b/app/src/main/res/layout/dessert_list_item.xml	(date 1765494920212)
+@@ -0,0 +1,98 @@
++<?xml version="1.0" encoding="utf-8"?>
++<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
++
++    xmlns:app="http://schemas.android.com/apk/res-auto"
++
++    xmlns:tools="http://schemas.android.com/tools"
++
++    android:layout_width="match_parent"
++
++    android:layout_height="wrap_content"
++
++    android:background="#DAB4B4"
++
++    android:layout_margin="8dp"
++
++    android:padding="12dp">
++
++    <ImageView
++
++        android:id="@+id/meal_thumb"
++
++        android:layout_width="80dp"
++
++        android:layout_height="80dp"
++
++        android:scaleType="centerCrop"
++
++        android:visibility="gone"
++
++        app:layout_constraintBottom_toBottomOf="parent"
++
++        app:layout_constraintStart_toStartOf="parent"
++
++        app:layout_constraintTop_toTopOf="parent" />
++
++    <TextView
++
++        android:id="@+id/meal_name"
++
++        android:layout_width="0dp"
++
++        android:layout_height="wrap_content"
++
++        android:layout_marginStart="12dp"
++
++        android:fontFamily="cursive"
++
++        android:textColor="@color/black"
++
++        android:textSize="20sp"
++
++        android:textStyle="bold|italic"
++
++        app:layout_constraintEnd_toStartOf="@+id/btn_favorite"
++
++        app:layout_constraintStart_toEndOf="@id/meal_thumb"
++
++        app:layout_constraintTop_toTopOf="parent"
++
++        tools:text="Dessert Name" />
++
++    <TextView
++
++        android:id="@+id/meal_id"
++
++        android:layout_width="wrap_content"
++
++        android:layout_height="wrap_content"
++
++        android:layout_marginStart="12dp"
++
++        android:visibility="gone"
++
++        app:layout_constraintStart_toEndOf="@id/meal_thumb"
++
++        app:layout_constraintTop_toBottomOf="@id/meal_name"
++
++        tools:text="ID: 12345" />
++
++    <ImageButton
++
++        android:id="@+id/btn_favorite"
++
++        android:layout_width="48dp"
++
++        android:layout_height="48dp"
++
++        android:src="@android:drawable/btn_star"
++
++        android:background="?attr/selectableItemBackgroundBorderless"
++
++        app:layout_constraintEnd_toEndOf="parent"
++
++        app:layout_constraintTop_toTopOf="parent"
++
++        app:layout_constraintBottom_toBottomOf="parent"/>
++
++</androidx.constraintlayout.widget.ConstraintLayout>

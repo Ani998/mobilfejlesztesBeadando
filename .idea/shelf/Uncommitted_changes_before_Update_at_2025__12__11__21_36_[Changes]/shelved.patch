@@ -1,0 +1,199 @@
+Index: app/src/main/java/com/example/mobilbeadando/DessertsFragment.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.mobilbeadando;\r\n\r\nimport android.os.Bundle;\r\nimport android.view.LayoutInflater;\r\nimport android.view.View;\r\nimport android.view.ViewGroup;\r\n\r\nimport androidx.annotation.NonNull;\r\nimport androidx.annotation.Nullable;\r\nimport androidx.fragment.app.Fragment;\r\n\r\npublic class DessertsFragment extends Fragment {\r\n\r\n    public DessertsFragment() {\r\n\r\n    }\r\n\r\n    @Nullable\r\n    @Override\r\n    public View onCreateView(@NonNull LayoutInflater inflater,\r\n                             @Nullable ViewGroup container,\r\n                             @Nullable Bundle savedInstanceState) {\r\n\r\n        return inflater.inflate(R.layout.fragment_desserts, container, false);\r\n    }\r\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/mobilbeadando/DessertsFragment.java b/app/src/main/java/com/example/mobilbeadando/DessertsFragment.java
+--- a/app/src/main/java/com/example/mobilbeadando/DessertsFragment.java	(revision c81ab18cefc6fafae1e9ff511c601c7920fdb74f)
++++ b/app/src/main/java/com/example/mobilbeadando/DessertsFragment.java	(date 1765481844952)
+@@ -4,23 +4,53 @@
+ import android.view.LayoutInflater;
+ import android.view.View;
+ import android.view.ViewGroup;
++import android.widget.Button;
++import android.widget.EditText;
++import android.widget.TextView;
++import android.widget.Toast;
+ 
+-import androidx.annotation.NonNull;
+ import androidx.annotation.Nullable;
+ import androidx.fragment.app.Fragment;
++import androidx.recyclerview.widget.LinearLayoutManager;
++import androidx.recyclerview.widget.RecyclerView;
++
++import java.util.List;
+ 
+ public class DessertsFragment extends Fragment {
+ 
+-    public DessertsFragment() {
+-
+-    }
++    private EditText editText_search;
++    private Button button_search;
++    private TextView textViewDessertsTitle;
++    private TextView textview_desserts_content;
++    private RecyclerView dessertsRecyclerView;
+ 
+     @Nullable
+     @Override
+-    public View onCreateView(@NonNull LayoutInflater inflater,
+-                             @Nullable ViewGroup container,
+-                             @Nullable Bundle savedInstanceState) {
++    public View onCreateView(LayoutInflater inflater, ViewGroup container,
++                             Bundle savedInstanceState) {
++
++        View view = inflater.inflate(R.layout.fragment_desserts, container, false);
+ 
+-        return inflater.inflate(R.layout.fragment_desserts, container, false);
++        editText_search = view.findViewById(R.id.editText_search);
++        button_search = view.findViewById(R.id.button_search);
++        textViewDessertsTitle = view.findViewById(R.id.textViewDessertsTitle);
++        textview_desserts_content = view.findViewById(R.id.textview_desserts_content);
++        pastaRecyclerView = view.findViewById(R.id.dessertsRecyclerView);
++
++        // Adatok betöltése
++        List<Desserts> dessertsList = DessertsResponse.getDessertsList();
++
++        // RecyclerView beállítása
++        DessertsResult adapter = new DessertsResult(dessertsList);
++        dessertsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
++        dessertsRecyclerView.setAdapter(adapter);
++
++        // Keresés gomb
++        button_search.setOnClickListener(v -> {
++            String meal = editText_search.getText().toString();
++            Toast.makeText(getContext(), "Searching desserts: " + meal, Toast.LENGTH_SHORT).show();
++        });
++
++        return view;
+     }
+ }
+\ No newline at end of file
+Index: app/src/main/java/com/example/mobilbeadando/DessertsResponse.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/mobilbeadando/DessertsResponse.java b/app/src/main/java/com/example/mobilbeadando/DessertsResponse.java
+new file mode 100644
+--- /dev/null	(date 1765483061043)
++++ b/app/src/main/java/com/example/mobilbeadando/DessertsResponse.java	(date 1765483061043)
+@@ -0,0 +1,16 @@
++package com.example.mobilbeadando;
++
++import java.util.ArrayList;
++import java.util.List;
++
++public class DessertsResponse {
++
++    public static List<Desserts> getDessertsList() {
++        List<Desserts> desserts = new ArrayList<>();
++
++        desserts.add(new Pasta("Chilli prawn linguine", "https://www.themealdb.com/images/media/meals/usywpp1511189717.jpg", "52839"));
++        meals.add(new Pasta("Fettuccine Alfredo", "https://www.themealdb.com/images/media/meals/0jv5gx1661040802.jpg", "53064"));
++
++        return desserts;
++    }
++}
+\ No newline at end of file
+Index: app/src/main/java/com/example/mobilbeadando/DessertsResult.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/com/example/mobilbeadando/DessertsResult.java b/app/src/main/java/com/example/mobilbeadando/DessertsResult.java
+new file mode 100644
+--- /dev/null	(date 1765483866661)
++++ b/app/src/main/java/com/example/mobilbeadando/DessertsResult.java	(date 1765483866661)
+@@ -0,0 +1,89 @@
++package com.example.mobilbeadando;
++
++import android.content.Context;
++import android.view.LayoutInflater;
++import android.view.View;
++import android.view.ViewGroup;
++import android.widget.ImageView;
++import android.widget.TextView;
++
++import androidx.annotation.NonNull;
++import androidx.recyclerview.widget.RecyclerView;
++
++import com.bumptech.glide.Glide; // Győződj meg róla, hogy a Glide be van húzva a gradle-be!
++
++import java.util.List;
++
++public class DessertsResult extends RecyclerView.Adapter<DessertsResult.PastaViewHolder> {
++
++    private List<Desserts> dessertsList;
++    private Context context;
++
++    public DessertsResult(List<Desserts> dessertsList) {
++        this.dessertsList = dessertsList;
++    }
++
++    @NonNull
++    @Override
++    public PastaViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
++        this.context = parent.getContext();
++        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.pasta_list_item, parent, false);
++        return new PastaViewHolder(view);
++    }
++
++    @Override
++    public void onBindViewHolder(@NonNull PastaViewHolder holder, int position) {
++        Pasta currentPasta = pastaList.get(position);
++
++        // Név beállítása
++        holder.mealName.setText(currentPasta.getStrMeal());
++
++        // ID beállítása
++        holder.mealId.setText("ID: " + currentPasta.getIdMeal());
++
++        // Kép betöltése URL-ből Glide segítségével
++        // (ez a feladatleírásban "Nagyfelbontású képi erőforrások betöltése Glide csomag használatával valósuljon meg")
++        Glide.with(context)
++                .load(currentPasta.getStrMealThumb())
++                .placeholder(R.drawable.ic_launcher_background) // Opcionális: kell egy placeholder kép
++                .into(holder.mealThumb);
++
++        // Logika: Ha 'isExpanded' igaz, akkor látható a kép és az ID, egyébként GONE (eltűnik)
++
++        if (currentPasta.isExpanded()) {
++            holder.mealThumb.setVisibility(View.VISIBLE);
++            holder.mealId.setVisibility(View.VISIBLE);
++        } else {
++            holder.mealThumb.setVisibility(View.GONE);
++            holder.mealId.setVisibility(View.GONE);
++        }
++
++        // Kattintás esemény az egész elemre - Kattintásra nyílik - csukódik a sor
++        holder.itemView.setOnClickListener(v -> {
++            // Átállítjuk az állapotot az ellenkezőjére
++            boolean expanded = currentPasta.isExpanded();
++            currentPasta.setExpanded(!expanded);
++
++            // Értesítjük az adaptert, hogy ez az elem megváltozott, rajzolja újra
++            notifyItemChanged(position);
++        });
++    }
++
++    @Override
++    public int getItemCount() {
++        return pastaList.size();
++    }
++
++    public static class PastaViewHolder extends RecyclerView.ViewHolder {
++        ImageView mealThumb;
++        TextView mealName;
++        TextView mealId;
++
++        public PastaViewHolder(@NonNull View itemView) {
++            super(itemView);
++            mealThumb = itemView.findViewById(R.id.meal_thumb);
++            mealName = itemView.findViewById(R.id.meal_name);
++            mealId = itemView.findViewById(R.id.meal_id);
++        }
++    }
++}
